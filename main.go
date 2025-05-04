@@ -2,69 +2,48 @@ package main
 
 import (
 	"fmt"
+	"kubernetes-conference-app/helper"
 	"strings"
 )
 
+var conferenceName string = "Kubernetes conference"
+
+const conferenceTickets = 50
+
+// unit is unsgined integer we can initialize only 0 or positive numeric value
+var remainingTickets uint = 50
+
+//     Array: Fixed size, how many elements the array can hold
+//     var bookings [50]string
+
+/*   slice is an abstraction of an array
+variable length or get an sub-array of its own
+slices are also index-based and have a size, but is resized when needed
+*/
+// dynamic list
+var bookings = []string{}
+
 func main() {
-	conferenceName := "Kubernetes conference"
-	const conferenceTickets = 50
-	//  unit is unsgined integer we can initialize only 0 or positive numeric value
-	var remainingTickets uint = 50
 
-	//     Array: Fixed size, how many elements the array can hold
-	//     var bookings [50]string
-
-	/*   slice is an abstraction of an array
-	variable length or get an sub-array of its own
-	slices are also index-based and have a size, but is resized when needed
-	*/
-	// dynamic list
-	bookings := []string{}
-
-	getUsers(conferenceName, conferenceTickets, remainingTickets)
+	getUsers()
 
 	//  formatted output using Printf
 
 	//     for remainingTickets > 0 && len(bookings) < 50 {}
 	for {
-		var firstName string
-		var lastName string
-		var email string
-		var userTickets uint
-
 		//     pointer is a variable that points to the memory address of another variable
 		//     Here we are using memory address of a variable userName, email and userTickets
 		//     pointers are also called special variable in Go
 
-		fmt.Println("Enter your first name")
-		fmt.Scan(&firstName)
+		firstName, lastName, email, userTickets := getUserInput()
 
-		fmt.Println("Enter lastname name")
-		fmt.Scan(&lastName)
-
-		fmt.Println("Enter your email")
-		fmt.Scan(&email)
-
-		fmt.Println("Enter your tickets")
-		fmt.Scan(&userTickets)
-
-		isValidName, isValidEmail, isValidTicketNumber := validateUserInput(firstName, lastName, email, userTickets, remainingTickets)
+		isValidName, isValidEmail, isValidTicketNumber := helper.ValidateUserInput(firstName, lastName, email, userTickets, remainingTickets)
 
 		//         isValidCity := city == "San Francisco" || city == "San Jose"
 
 		if isValidName && isValidEmail && isValidTicketNumber {
-			remainingTickets = remainingTickets - userTickets
-			//     bookings[0] = firstName + " " + lastName
-			bookings = append(bookings, firstName+" "+lastName)
-
-			//     fmt.Printf("The first value is %v.\n",bookings[0])
-			//     fmt.Printf("Array length %v.\n", len(bookings))
-			//     fmt.Printf("Slice length %v.\n", len(bookings))
-
-			fmt.Printf("Thankyou %v for booking %v tickets to attend %v, you will be receiving email confirmation at %v with the passes .\n", firstName, userTickets, conferenceName, email)
-			fmt.Printf("Total remainingTickets available in %v are %v.\n", conferenceName, remainingTickets)
-
-			firstNames := getFirstNames(bookings)
+			bookTicket(remainingTickets, userTickets, bookings, firstName, lastName, email, conferenceName)
+			firstNames := getFirstNames()
 			fmt.Printf("FirstName of the bookings are %v \n", firstNames)
 
 			if remainingTickets == 0 {
@@ -88,13 +67,13 @@ func main() {
 	}
 }
 
-func getUsers(conferenceName string, conferenceTickets int, remainingTickets uint) {
+func getUsers() {
 	fmt.Printf("Welcome to %v booking application \n", conferenceName)
 	fmt.Printf("We have total of %v tickets and  %v are still available \n", conferenceTickets, remainingTickets)
 	fmt.Printf("Get your tickets here to attend \n")
 }
 
-func getFirstNames(bookings []string) []string {
+func getFirstNames() []string {
 	firstNames := []string{}
 	// index - to ignore a variable you don't want to use
 	// iterating over the dynamic list - to get only first names
@@ -107,12 +86,41 @@ func getFirstNames(bookings []string) []string {
 
 }
 
-func validateUserInput(firstName string, lastName string, email string, userTickets uint, remainingTickets uint) (bool, bool, bool) {
-	isValidName := len(firstName) >= 2 && len(lastName) >= 2
-	isValidEmail := strings.Contains(email, "@")
-	isValidTicketNumber := userTickets > 0 && userTickets <= remainingTickets
+func getUserInput() (string, string, string, uint) {
 
-	return isValidName, isValidEmail, isValidTicketNumber
+	var firstName string
+	var lastName string
+	var email string
+	var userTickets uint
+
+	fmt.Println("Enter your first name")
+	fmt.Scan(&firstName)
+
+	fmt.Println("Enter lastname name")
+	fmt.Scan(&lastName)
+
+	fmt.Println("Enter your email")
+	fmt.Scan(&email)
+
+	fmt.Println("Enter your tickets")
+	fmt.Scan(&userTickets)
+
+	return firstName, lastName, email, userTickets
+
+}
+
+func bookTicket(remainingTickets uint, userTickets uint, bookings []string, firstName string, lastName string, email string, conferenceName string) {
+
+	remainingTickets = remainingTickets - userTickets
+	//     bookings[0] = firstName + " " + lastName
+	bookings = append(bookings, firstName+" "+lastName)
+
+	//     fmt.Printf("The first value is %v.\n",bookings[0])
+	//     fmt.Printf("Array length %v.\n", len(bookings))
+	//     fmt.Printf("Slice length %v.\n", len(bookings))
+
+	fmt.Printf("Thankyou %v for booking %v tickets to attend %v, you will be receiving email confirmation at %v with the passes .\n", firstName, userTickets, conferenceName, email)
+	fmt.Printf("Total remainingTickets available in %v are %v.\n", conferenceName, remainingTickets)
 }
 
 //     city := "London"
