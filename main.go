@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"kubernetes-conference-app/helper"
-	"strings"
 )
 
 var conferenceName string = "Kubernetes conference"
@@ -21,7 +20,17 @@ variable length or get an sub-array of its own
 slices are also index-based and have a size, but is resized when needed
 */
 // dynamic list
-var bookings = []string{}
+// Create empty list of maps
+//var bookings = make([]map[string]string, 0)
+var bookings = make([]UserData, 0)
+
+// Here UserData stuct is custom data type
+type UserData struct {
+	firstName       string
+	lastName        string
+	email           string
+	numberOfTickets uint
+}
 
 func main() {
 
@@ -42,7 +51,7 @@ func main() {
 		//         isValidCity := city == "San Francisco" || city == "San Jose"
 
 		if isValidName && isValidEmail && isValidTicketNumber {
-			bookTicket(remainingTickets, userTickets, bookings, firstName, lastName, email, conferenceName)
+			bookTicket(userTickets, firstName, lastName, email)
 			firstNames := getFirstNames()
 			fmt.Printf("FirstName of the bookings are %v \n", firstNames)
 
@@ -78,9 +87,10 @@ func getFirstNames() []string {
 	// index - to ignore a variable you don't want to use
 	// iterating over the dynamic list - to get only first names
 	for _, booking := range bookings {
-		var names = strings.Fields(booking)
+		//var names = strings.Fields(booking)
 		//             var firstName = names[0]
-		firstNames = append(firstNames, names[0])
+		//firstNames = append(firstNames, booking["firstName"])
+		firstNames = append(firstNames, booking.firstName)
 	}
 	return firstNames
 
@@ -109,11 +119,27 @@ func getUserInput() (string, string, string, uint) {
 
 }
 
-func bookTicket(remainingTickets uint, userTickets uint, bookings []string, firstName string, lastName string, email string, conferenceName string) {
+func bookTicket(userTickets uint, firstName string, lastName string, email string) {
 
 	remainingTickets = remainingTickets - userTickets
+
+	//create a map for a user
+	//var userData = make(map[string]string)
+	var userData = UserData{
+		firstName:       firstName,
+		lastName:        lastName,
+		email:           email,
+		numberOfTickets: userTickets,
+	}
+
+	//userData["firstName"] = firstName
+	//userData["lastnName"] = lastName
+	//userData["email"] = email
+	//userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+
 	//     bookings[0] = firstName + " " + lastName
-	bookings = append(bookings, firstName+" "+lastName)
+	bookings = append(bookings, userData)
+	fmt.Printf("List of booking  is %v.\n", bookings)
 
 	//     fmt.Printf("The first value is %v.\n",bookings[0])
 	//     fmt.Printf("Array length %v.\n", len(bookings))
