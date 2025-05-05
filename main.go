@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"kubernetes-conference-app/helper"
+	"time"
 )
 
 var conferenceName string = "Kubernetes conference"
@@ -52,6 +53,7 @@ func main() {
 
 		if isValidName && isValidEmail && isValidTicketNumber {
 			bookTicket(userTickets, firstName, lastName, email)
+			go sendTicket(userTickets, firstName, lastName, email)
 			firstNames := getFirstNames()
 			fmt.Printf("FirstName of the bookings are %v \n", firstNames)
 
@@ -147,6 +149,14 @@ func bookTicket(userTickets uint, firstName string, lastName string, email strin
 
 	fmt.Printf("Thankyou %v for booking %v tickets to attend %v, you will be receiving email confirmation at %v with the passes .\n", firstName, userTickets, conferenceName, email)
 	fmt.Printf("Total remainingTickets available in %v are %v.\n", conferenceName, remainingTickets)
+}
+
+func sendTicket(userTickets uint, firstName string, lastName string, email string) {
+	time.Sleep(10 * time.Second)
+	var ticket = fmt.Sprintf("%v ticket for %v %v", userTickets, firstName, lastName)
+	fmt.Println("################")
+	fmt.Printf("Sending ticket:\n %v to your email address %v \n", ticket, email)
+	fmt.Println("################")
 }
 
 //     city := "London"

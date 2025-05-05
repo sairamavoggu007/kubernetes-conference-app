@@ -32,4 +32,8 @@ The type keyword creates a new type, with the name you specify
 In fact, you could also create a type based on every other data type like  int,string etc.
 
 
+For concurrent threads we use "go ..." starts a new goroutine
+A goroutine is a lightweight thread managed by the go runtime
+
+
    
