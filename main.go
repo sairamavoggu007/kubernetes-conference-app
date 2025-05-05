@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"kubernetes-conference-app/helper"
+	//"sync"
 	"time"
 )
 
@@ -33,6 +34,7 @@ type UserData struct {
 	numberOfTickets uint
 }
 
+// var wg = sync.WaitGroup()  // Increase the counter that application should wait
 func main() {
 
 	getUsers()
@@ -53,6 +55,8 @@ func main() {
 
 		if isValidName && isValidEmail && isValidTicketNumber {
 			bookTicket(userTickets, firstName, lastName, email)
+
+			//wg.Add(1)
 			go sendTicket(userTickets, firstName, lastName, email)
 			firstNames := getFirstNames()
 			fmt.Printf("FirstName of the bookings are %v \n", firstNames)
@@ -157,6 +161,7 @@ func sendTicket(userTickets uint, firstName string, lastName string, email strin
 	fmt.Println("################")
 	fmt.Printf("Sending ticket:\n %v to your email address %v \n", ticket, email)
 	fmt.Println("################")
+	//wg.Done() //removes thread from waiting list
 }
 
 //     city := "London"

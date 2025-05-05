@@ -35,5 +35,7 @@ In fact, you could also create a type based on every other data type like  int,s
 For concurrent threads we use "go ..." starts a new goroutine
 A goroutine is a lightweight thread managed by the go runtime
 
+synchronizing the goroutine
+
 
    
